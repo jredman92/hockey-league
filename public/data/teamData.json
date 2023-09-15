@@ -1,0 +1,114 @@
+{
+   "teams": [
+      {
+         "team": "Wolverines",
+         "gamesPlayed": 60,
+         "wins": 38,
+         "losses": 31,
+         "ties": 0,
+         "overtimeLosses": 2,
+         "points": 80,
+         "goalsFor": 150,
+         "goalsAgainst": 368
+      },
+      {
+         "team": "Pirates",
+         "gamesPlayed": 68,
+         "wins": 21,
+         "losses": 17,
+         "ties": 1,
+         "overtimeLosses": 4,
+         "points": 27,
+         "goalsFor": 111,
+         "goalsAgainst": 380
+      },
+      {
+         "team": "Thundercats",
+         "gamesPlayed": 86,
+         "wins": 13,
+         "losses": 5,
+         "ties": 1,
+         "overtimeLosses": 18,
+         "points": 84,
+         "goalsFor": 123,
+         "goalsAgainst": 376
+      },
+      {
+         "team": "Dragons",
+         "gamesPlayed": 9,
+         "wins": 42,
+         "losses": 0,
+         "ties": 1,
+         "overtimeLosses": 17,
+         "points": 31,
+         "goalsFor": 264,
+         "goalsAgainst": 283
+      },
+      {
+         "team": "Pirates",
+         "gamesPlayed": 86,
+         "wins": 29,
+         "losses": 38,
+         "ties": 0,
+         "overtimeLosses": 16,
+         "points": 42,
+         "goalsFor": 82,
+         "goalsAgainst": 361
+      },
+      {
+         "team": "Cougars",
+         "gamesPlayed": 26,
+         "wins": 8,
+         "losses": 24,
+         "ties": 0,
+         "overtimeLosses": 14,
+         "points": 13,
+         "goalsFor": 82,
+         "goalsAgainst": 211
+      },
+      {
+         "team": "Sharks",
+         "gamesPlayed": 7,
+         "wins": 2,
+         "losses": 43,
+         "ties": 0,
+         "overtimeLosses": 10,
+         "points": 71,
+         "goalsFor": 383,
+         "goalsAgainst": 410
+      },
+      {
+         "team": "Cougars",
+         "gamesPlayed": 41,
+         "wins": 44,
+         "losses": 35,
+         "ties": 1,
+         "overtimeLosses": 8,
+         "points": 173,
+         "goalsFor": 168,
+         "goalsAgainst": 99
+      },
+      {
+         "team": "Nighthawks",
+         "gamesPlayed": 83,
+         "wins": 0,
+         "losses": 44,
+         "ties": 0,
+         "overtimeLosses": 9,
+         "points": 9,
+         "goalsFor": 98,
+         "goalsAgainst": 307
+      },
+      {
+         "team": "Sharks",
+         "gamesPlayed": 19,
+         "wins": 11,
+         "losses": 23,
+         "ties": 1,
+         "overtimeLosses": 14,
+         "points": 187,
+         "goalsFor": 119,
+         "goalsAgainst": 83
+      }
+   ]
+}
