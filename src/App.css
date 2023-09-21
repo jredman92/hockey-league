@@ -16,8 +16,7 @@ nav a {
     position: relative;
     text-decoration: none;
     color: #000000;
-    transition: color 0.3s;
-    text-shadow: 0 0 2px #fff; /* White border around text */
+    transition: color 0.5s;
 }
 
 nav a::before {
@@ -27,22 +26,9 @@ nav a::before {
     left: 0;
     right: 0;
     height: 0;
-    background: linear-gradient(to top, #3182ce 20%, transparent);
+    background: linear-gradient(to top, #3182ce, transparent);
     transition: height 0.5s;
 }
-
-nav a::after {
-    content: '';
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    border: 1px solid #3182ce; /* Border color and thickness */
-    top: 0;
-    left: 0;
-    transition: opacity 0.3s;
-    opacity: 0; /* Initially hide the border */
-}
-
 nav a.active::after {
     content: '';
     position: absolute;
@@ -50,17 +36,12 @@ nav a.active::after {
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(to top, #3182ce 100%, transparent);
+    background: linear-gradient(to top, #3182ce 30%, transparent);
     transition: height 0.5s;
 }
 
 nav a:hover::before {
     height: 40px;
-}
-
-nav a:hover {
-    outline: 1px solid white; /* Add a white border */
-    outline-offset: -1px; /* Adjust the offset as needed */
 }
 
 nav a.active {
