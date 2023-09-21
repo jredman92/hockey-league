@@ -89,7 +89,7 @@ const Teams = ({ searchQuery }) => {
                {sortedResultsData.length > 0 ? (
                   <table className="min-w-full bg-white table-bordered">
                      <colgroup className="team-colgroup">
-                        <col className="team-col" />
+                        <col className="player-col w-[250px]" />
                      </colgroup>
                      <thead>
                         <tr>

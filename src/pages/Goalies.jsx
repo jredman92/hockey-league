@@ -91,7 +91,7 @@ const Goalies = ({ searchQuery }) => {
                {sortedResultsData.length > 0 ? (
                   <table className="min-w-full bg-white table-bordered">
                      <colgroup className="player-colgroup">
-                        <col className="player-col" />
+                        <col className="player-col w-[250px]" />
                      </colgroup>
                      <thead>
                         <tr>

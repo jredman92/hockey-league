@@ -1,116 +1,115 @@
 import React, { useEffect, useState } from "react";
 
 const Skaters = ({ searchQuery }) => {
-   const [jsonData, setJsonData] = useState({ players: [] });
+   const [jsonData, setJsonData] = useState({ values: [] });
    const [filteredResults, setFilteredResults] = useState([]);
-   const [sortColumn, setSortColumn] = useState(""); // State for the column to sort by
-   const [sortedColumn, setSortedColumn] = useState(""); // Highlight column being sorted
-   const [sortDirection, setSortDirection] = useState("asc"); // State for sorting direction
+   const [sortConfig, setSortConfig] = useState({
+      column: "",
+      direction: "asc",
+   });
 
    useEffect(() => {
+      const spreadsheetId = "1Nb5dze2f390lMxfwvwVcSglF3OepdH02e1gqKVn_07Y";
+      const range = "hockey";
+      const apiKey = "AIzaSyC1NBWwSTURCwIdzhqTXdLpkppssRCdXJo";
+
       async function fetchData() {
          try {
-            const response = await fetch("../data/skaterData.json");
+            const response = await fetch(
+               `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${range}?key=${apiKey}`
+            );
+
             if (!response.ok) {
                throw new Error("Network response failed");
             }
+
             const data = await response.json();
             setJsonData(data);
          } catch (error) {
             console.error("Error retrieving data:", error);
          }
       }
+
       fetchData();
    }, []);
 
-   const handleSort = (columnName) => {
-      setSortColumn(columnName);
-      setSortDirection((prevSortDirection) =>
-         prevSortDirection === "asc" ? "desc" : "asc"
-      );
-
-      setSortedColumn(columnName); // Set the currently sorted column
-
-      setFilteredResults((prevFilteredResults) => {
-         return [...prevFilteredResults].sort((a, b) => {
-            const aValue = a[columnName];
-            const bValue = b[columnName];
-
-            if (typeof aValue === "string" && typeof bValue === "string") {
-               // Use String localeCompare for string values
-               return sortDirection === "asc"
-                  ? aValue.localeCompare(bValue)
-                  : bValue.localeCompare(aValue);
-            } else {
-               // Use numeric comparison for numeric values
-               return sortDirection === "asc"
-                  ? aValue - bValue
-                  : bValue - aValue;
-            }
-         });
-      });
-   };
-
-   const getSortedResults = () => {
-      if (sortColumn) {
-         const comparator = (a, b) => {
-            const aValue = a[sortColumn];
-            const bValue = b[sortColumn];
-
-            if (typeof aValue === "string" && typeof bValue === "string") {
-               // Use String localeCompare for string values
-               return sortDirection === "asc"
-                  ? aValue.localeCompare(bValue)
-                  : bValue.localeCompare(aValue);
-            } else {
-               // Use numeric comparison for numeric values
-               return sortDirection === "asc"
-                  ? aValue - bValue
-                  : bValue - aValue;
-            }
-         };
-
-         return [...filteredResults].sort(comparator);
-      }
-      return filteredResults;
-   };
-
    useEffect(() => {
       const lowercasedQuery = searchQuery.toLowerCase();
-      const filtered = jsonData.players.filter((player) =>
-         player.player.toLowerCase().includes(lowercasedQuery)
+      const filtered = jsonData.values.filter((row, index) =>
+         index === 0 ? true : row[0].toLowerCase().includes(lowercasedQuery)
       );
-      setFilteredResults(filtered);
-   }, [searchQuery, jsonData.players]);
+      setFilteredResults(filtered.slice(1));
+   }, [searchQuery, jsonData.values]);
 
-   const sortedResultsData = getSortedResults();
+   const handleSort = (columnName) => {
+      let direction = "asc";
+      if (sortConfig.column === columnName && sortConfig.direction === "asc") {
+         direction = "desc";
+      }
+      setSortConfig({ column: columnName, direction });
+
+      const columnIndex = jsonData.values[0].indexOf(columnName);
+      if (columnIndex === -1) {
+         console.error(`Invalid column name: ${columnName}`);
+         return;
+      }
+
+      const sortedData = [...filteredResults].sort((a, b) => {
+         const aValue = a[columnIndex];
+         const bValue = b[columnIndex];
+
+         if (!isNaN(aValue) && !isNaN(bValue)) {
+            return direction === "asc" ? aValue - bValue : bValue - aValue;
+         } else if (typeof aValue === "string" && typeof bValue === "string") {
+            return direction === "asc"
+               ? aValue.localeCompare(bValue)
+               : bValue.localeCompare(aValue);
+         } else {
+            return direction === "asc" ? aValue - bValue : bValue - aValue;
+         }
+      });
+
+      setFilteredResults(sortedData);
+   };
 
    const renderTableHeader = (column, label, hoverText) => (
       <th
          key={column}
          className={`text-left py-2 px-3 bg-gray-800 text-white ${
-            sortColumn === column ? "sorted" : ""
+            sortConfig.column === column ? "sorted" : ""
          }`}
          title={hoverText}
          onClick={() => handleSort(column)}
       >
          <div className="header-content">
             <span>{label}</span>
-            {sortColumn === column && sortDirection === "asc" && (
-               <span>&nbsp;▲</span>
-            )}
-            {sortColumn === column && sortDirection === "desc" && (
-               <span>&nbsp;▼</span>
+            {sortConfig.column === column && (
+               <span>&nbsp;{sortConfig.direction === "asc" ? "▲" : "▼"}</span>
             )}
          </div>
       </th>
    );
 
+   const sortedResultsData = filteredResults.map((player) => ({
+      player: player[0],
+      team: player[1],
+      position: player[2],
+      gamesPlayed: player[3],
+      goals: player[4],
+      assists: player[5],
+      points: player[6],
+      pointsPerGame: player[7],
+      overtimeGoals: player[8],
+      gameWinningGoals: player[9],
+      shots: player[10],
+      shootingPercentage: player[11],
+   }));
+
    return (
       <div>
          <div className="container mx-auto px-5 py-5">
             <div className="overflow-x-auto">
-               {sortedResultsData.length > 0 ? (
+               {jsonData.values.length > 0 ? (
                   <table className="min-w-full bg-white table-bordered">
                      <colgroup className="player-colgroup">
                         <col
@@ -213,7 +212,7 @@ const Skaters = ({ searchQuery }) => {
                            >
                               <td
                                  className={`py-2 px-3 ${
-                                    sortedColumn === "player"
+                                    sortConfig.column === "player"
                                        ? "sorted-odd"
                                        : ""
                                  }`}
@@ -222,14 +221,16 @@ const Skaters = ({ searchQuery }) => {
                               </td>
                               <td
                                  className={`py-2 px-3 ${
-                                    sortedColumn === "team" ? "sorted-even" : ""
+                                    sortConfig.column === "team"
+                                       ? "sorted-even"
+                                       : ""
                                  }`}
                               >
                                  {player.team}
                               </td>
                               <td
                                  className={`py-2 px-3 ${
-                                    sortedColumn === "position"
+                                    sortConfig.column === "position"
                                        ? "sorted-odd"
                                        : ""
                                  }`}
@@ -238,7 +239,7 @@ const Skaters = ({ searchQuery }) => {
                               </td>
                               <td
                                  className={`py-2 px-3 ${
-                                    sortedColumn === "gamesPlayed"
+                                    sortConfig.column === "gamesPlayed"
                                        ? "sorted-column"
                                        : ""
                                  }`}
@@ -247,7 +248,7 @@ const Skaters = ({ searchQuery }) => {
                               </td>
                               <td
                                  className={`py-2 px-3 ${
-                                    sortedColumn === "goals"
+                                    sortConfig.column === "goals"
                                        ? "sorted-column"
                                        : ""
                                  }`}
@@ -256,7 +257,7 @@ const Skaters = ({ searchQuery }) => {
                               </td>
                               <td
                                  className={`py-2 px-3 ${
-                                    sortedColumn === "assists"
+                                    sortConfig.column === "assists"
                                        ? "sorted-column"
                                        : ""
                                  }`}
@@ -265,7 +266,7 @@ const Skaters = ({ searchQuery }) => {
                               </td>
                               <td
                                  className={`py-2 px-3 ${
-                                    sortedColumn === "points"
+                                    sortConfig.column === "points"
                                        ? "sorted-column"
                                        : ""
                                  }`}
@@ -274,7 +275,7 @@ const Skaters = ({ searchQuery }) => {
                               </td>
                               <td
                                  className={`py-2 px-3 ${
-                                    sortedColumn === "pointsPerGame"
+                                    sortConfig.column === "pointsPerGame"
                                        ? "sorted-column"
                                        : ""
                                  }`}
@@ -283,7 +284,7 @@ const Skaters = ({ searchQuery }) => {
                               </td>
                               <td
                                  className={`py-2 px-3 ${
-                                    sortedColumn === "overtimeGoals"
+                                    sortConfig.column === "overtimeGoals"
                                        ? "sorted-column"
                                        : ""
                                  }`}
@@ -292,7 +293,7 @@ const Skaters = ({ searchQuery }) => {
                               </td>
                               <td
                                  className={`py-2 px-3 ${
-                                    sortedColumn === "gameWinningGoals"
+                                    sortConfig.column === "gameWinningGoals"
                                        ? "sorted-column"
                                        : ""
                                  }`}
@@ -301,7 +302,7 @@ const Skaters = ({ searchQuery }) => {
                               </td>
                               <td
                                  className={`py-2 px-3 ${
-                                    sortedColumn === "shots"
+                                    sortConfig.column === "shots"
                                        ? "sorted-column"
                                        : ""
                                  }`}
@@ -310,7 +311,7 @@ const Skaters = ({ searchQuery }) => {
                               </td>
                               <td
                                  className={`py-2 px-3 ${
-                                    sortedColumn === "shootingPercentage"
+                                    sortConfig.column === "shootingPercentage"
                                        ? "sorted-column"
                                        : ""
                                  }`}

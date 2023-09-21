@@ -11,8 +11,8 @@ const Navbar = ({ searchQuery, handleSearchChange }) => {
    ];
 
    return (
-      <nav className="px-5 h-10 bg-white">
-         <div className="flex justify-left items-center h-full px-4 2xl:px-60">
+      <nav className="flex mx-auto px-5 h-10 w-9/12 bg-white">
+         <div className="flex items-center h-full">
             {navLink.map(({ link, name }) => (
                <NavLink
                   key={name}
