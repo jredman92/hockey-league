@@ -66,11 +66,6 @@ nav a.active {
     border-right: 1px solid #000000;
 }
 
-.team-col {
-    border-right: 1px solid #000000;
-    width: 15%;
-}
-
 /* Add these styles to your CSS */
 /* .sorted-odd {
    background-color: #593986;
